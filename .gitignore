@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+#idea - clion stuff
+.idea/
+
+#build 
+cmake-build-debug/
