@@ -53,13 +53,13 @@ struct Color {
     }
 
     /// get the intensity of the color (direct)
-    constexpr float intensity(void)
+    constexpr float intensity()
     {
         return (_r + _g + _b) / 3;
     }
 
     /// get the perceptual intensity of the color
-    constexpr float intensityPerceptual(void)
+    constexpr float intensityPerceptual()
     {
         return (_r * 0.299 + _g * 0.587 + _b * 0.114);
     }
