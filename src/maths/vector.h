@@ -20,17 +20,17 @@ public:
 		z_ = z;
 	}
 
-	void makeZero(void)
+	void makeZero()
 	{
 		x_ = y_ = z_ = 0.0;
 	}
 
-	inline double length(void) const
+	inline double length() const
 	{
 		return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 	}
 
-	inline constexpr double lengthSqr(void) const
+	inline constexpr double lengthSqr() const
 	{
 		return (x_ * x_ + y_ * y_ + z_ * z_);
 	}
@@ -59,7 +59,7 @@ public:
 		scale(1.0 / divider);
 	}
 
-	void normalize(void)
+	void normalize()
 	{
 		double multiplier = 1.0 / length();
 
@@ -75,17 +75,17 @@ public:
 
 };
 
-inline Vector operator + (const Vector& a, const Vector& b)
+inline Vector operator+ (const Vector& a, const Vector& b)
 {
 	return Vector(a.x_ + b.x_, a.y_ + b.y_, a.z_ + b.z_);
 }
 
-inline Vector operator - (const Vector& a, const Vector& b)
+inline Vector operator- (const Vector& a, const Vector& b)
 {
 	return Vector(a.x_ - b.x_, a.y_ - b.y_, a.z_ - b.z_);
 }
 
-inline Vector operator - (const Vector& a)
+inline Vector operator- (const Vector& a)
 {
 	return Vector(-a.x_, -a.y_, -a.z_);
 }
@@ -103,7 +103,7 @@ inline double dot(const Vector& a, const Vector& b)
 }
 
 /// cross product
-inline Vector operator ^ (const Vector& a, const Vector& b)
+inline Vector operator^ (const Vector& a, const Vector& b)
 {
 	return Vector(
 		a.y_ * b.z_ - a.z_ * b.y_,
@@ -112,17 +112,17 @@ inline Vector operator ^ (const Vector& a, const Vector& b)
 	);
 }
 
-inline Vector operator * (const Vector& a, double multiplier)
+inline Vector operator* (const Vector& a, double multiplier)
 {
 	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
 }
 
-inline Vector operator * (double multiplier, const Vector& a)
+inline Vector operator* (double multiplier, const Vector& a)
 {
 	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
 }
 
-inline Vector operator / (const Vector& a, double divider)
+inline Vector operator/ (const Vector& a, double divider)
 {
 	double multiplier = 1.0 / divider;
 	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
@@ -134,6 +134,12 @@ inline Vector reflect(Vector in, const Vector& norm)
 	in += 2 * norm * dot(norm, -in);
 	in.normalize();
 	return in;
+}
+
+inline Vector faceforward(const Vector& ray, const Vector& norm)
+{
+	if (dot(ray, norm) < 0) return norm;
+	else return -norm;
 }
 
 #endif // __VECTOR3D_H__
