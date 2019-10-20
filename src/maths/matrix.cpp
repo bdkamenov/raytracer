@@ -11,10 +11,10 @@ Matrix rotationAroundX(double angle)
 	double S = sin(angle);
 	double C = cos(angle);
 	Matrix a(1.0);
-	a._m[1][1] = C;
-	a._m[2][1] = S;
-	a._m[1][2] = -S;
-	a._m[2][2] = C;
+	a.m_[1][1] = C;
+	a.m_[2][1] = S;
+	a.m_[1][2] = -S;
+	a.m_[2][2] = C;
 	return a;
 }
 
@@ -23,10 +23,10 @@ Matrix rotationAroundY(double angle)
 	double S = sin(angle);
 	double C = cos(angle);
 	Matrix a(1.0);
-	a._m[0][0] = C;
-	a._m[2][0] = -S;
-	a._m[0][2] = S;
-	a._m[2][2] = C;
+	a.m_[0][0] = C;
+	a.m_[2][0] = -S;
+	a.m_[0][2] = S;
+	a.m_[2][2] = C;
 	return a;
 }
 
@@ -35,10 +35,10 @@ Matrix rotationAroundZ(double angle)
 	double S = sin(angle);
 	double C = cos(angle);
 	Matrix a(1.0);
-	a._m[0][0] = C;
-	a._m[1][0] = S;
-	a._m[0][1] = -S;
-	a._m[1][1] = C;
+	a.m_[0][0] = C;
+	a.m_[1][0] = S;
+	a.m_[0][1] = -S;
+	a.m_[1][1] = C;
 	return a;
 }
 
@@ -48,18 +48,18 @@ Matrix operator * (const Matrix& a, const Matrix& b)
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			for (int k = 0; k < 3; k++)
-				c._m[i][j] += a._m[i][k] * b._m[k][j];
+				c.m_[i][j] += a.m_[i][k] * b.m_[k][j];
 	return c;
 }
 
 double determinant(const Matrix& a)
 {
-	return a._m[0][0] * a._m[1][1] * a._m[2][2]
-	     - a._m[0][0] * a._m[1][2] * a._m[2][1]
-	     - a._m[0][1] * a._m[1][0] * a._m[2][2]
-	     + a._m[0][1] * a._m[1][2] * a._m[2][0]
-	     + a._m[0][2] * a._m[1][0] * a._m[2][1]
-	     - a._m[0][2] * a._m[1][1] * a._m[2][0];
+	return a.m_[0][0] * a.m_[1][1] * a.m_[2][2]
+	     - a.m_[0][0] * a.m_[1][2] * a.m_[2][1]
+	     - a.m_[0][1] * a.m_[1][0] * a.m_[2][2]
+	     + a.m_[0][1] * a.m_[1][2] * a.m_[2][0]
+	     + a.m_[0][2] * a.m_[1][0] * a.m_[2][1]
+	     - a.m_[0][2] * a.m_[1][1] * a.m_[2][0];
 }
 
 double cofactor(const Matrix& m, int ii, int jj)
@@ -69,7 +69,7 @@ double cofactor(const Matrix& m, int ii, int jj)
 		if (i != ii) rows[rc++] = i;
 	for (int j = 0; j < 3; j++)
 		if (j != jj) cols[cc++] = j;
-	double t = m._m[rows[0]][cols[0]] * m._m[rows[1]][cols[1]] - m._m[rows[1]][cols[0]] * m._m[rows[0]][cols[1]];
+	double t = m.m_[rows[0]][cols[0]] * m.m_[rows[1]][cols[1]] - m.m_[rows[1]][cols[0]] * m.m_[rows[0]][cols[1]];
 	if ((ii + jj) % 2) t = -t;
 	return t;
 }
@@ -82,7 +82,7 @@ Matrix inverseMatrix(const Matrix& m)
 	Matrix result;
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
-			result._m[i][j] = rD * cofactor(m, j, i);
+			result.m_[i][j] = rD * cofactor(m, j, i);
 	return result;
 }
 

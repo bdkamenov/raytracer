@@ -10,44 +10,44 @@
 
 void Camera::frameBegin()
 {
-    double x2d = _aspectRatio, y2d = +1;
+    double x2d = aspectRatio_, y2d = 1;
 
-    double wantedAngle = toRadians(_fov/2);
+    double wantedAngle = toRadians(fov_/2);
     double wantedLength = tan(wantedAngle);
-    double hypotLength = sqrt(sqr(_aspectRatio) + sqr(1.0));
+    double hypotLength = sqrt(sqr(aspectRatio_) + sqr(1.0));
     double scaleFactor = wantedLength / hypotLength;
 
     x2d *= scaleFactor*1.5;
     y2d *= scaleFactor*1.5;
 
-    _topLeft = Vector(-x2d, y2d, 1);
-    _topRight = Vector(x2d, y2d, 1);
-    _bottomLeft = Vector(-x2d, -y2d, 1);
+    topLeft_ = Vector(-x2d, y2d, 1);
+    topRight_ = Vector(x2d, y2d, 1);
+    bottomLeft_ = Vector(-x2d, -y2d, 1);
 
-    _rotation = rotationAroundZ(toRadians(_roll)) *
-                rotationAroundX(toRadians(_pitch)) *
-                rotationAroundY(toRadians(_yaw));
+    rotation_ = rotationAroundZ(toRadians(roll_)) *
+                rotationAroundX(toRadians(pitch_)) *
+                rotationAroundY(toRadians(yaw_));
 
-    _topLeft    *= _rotation;
-    _topRight   *= _rotation;
-    _bottomLeft *= _rotation;
+    topLeft_    *= rotation_;
+    topRight_   *= rotation_;
+    bottomLeft_ *= rotation_;
 
-    _topLeft    += _position;  // the milimeter list aka the view matrix
-    _topRight   += _position;  // is moved around the camera with it
-    _bottomLeft += _position;
+    topLeft_    += position_;  // the milimeter list aka the view matrix
+    topRight_   += position_;  // is moved around the camera with it
+    bottomLeft_ += position_;
 }
 
 Ray Camera::getScreenRay(double xScreen, double yScreen)
 {
     // the beginning of the view matrix shown in lecture 4
     Vector throughPoint = // startPoint + diff between beg end    * num between 0 1
-                                _topLeft + (_topRight - _topLeft) * (xScreen / RESX)
-                                         + (_bottomLeft - _topLeft) * (yScreen / RESY);
+                                topLeft_ + (topRight_ - topLeft_) * (xScreen / RESX)
+                                         + (bottomLeft_ - topLeft_) * (yScreen / RESY);
 
     Ray ray;
-    ray._dir = throughPoint - _position;
-    ray._dir.normalize(); // directions must be normalized
-    ray._start = _position;
+    ray.dir_ = throughPoint - position_;
+    ray.dir_.normalize(); // directions must be normalized
+    ray.start_ = position_;
     return ray;
 }
 

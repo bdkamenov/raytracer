@@ -8,24 +8,24 @@
 #include "vector.h"
 
 struct Matrix {
-    double _m[3][3];
+    double m_[3][3];
     Matrix() = default;
     
     Matrix(double diagonalElement)
     {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                if (i == j) _m[i][j] = diagonalElement;
-                else _m[i][j] = 0.0;
+                if (i == j) m_[i][j] = diagonalElement;
+                else m_[i][j] = 0.0;
     }
 };
 
 inline Vector operator * (const Vector& v, const Matrix& m)
 {
     return Vector(
-        v._x * m._m[0][0] + v._y * m._m[1][0] + v._z * m._m[2][0],
-        v._x * m._m[0][1] + v._y * m._m[1][1] + v._z * m._m[2][1],
-        v._x * m._m[0][2] + v._y * m._m[1][2] + v._z * m._m[2][2]
+        v.x_ * m.m_[0][0] + v.y_ * m.m_[1][0] + v.z_ * m.m_[2][0],
+        v.x_ * m.m_[0][1] + v.y_ * m.m_[1][1] + v.z_ * m.m_[2][1],
+        v.x_ * m.m_[0][2] + v.y_ * m.m_[1][2] + v.z_ * m.m_[2][2]
     );
 }
 

@@ -17,14 +17,14 @@ public:
 
 
 //private:
-    Vector _position;
-    double _yaw, _pitch, _roll;  // angles of rotation (in degrees)
-    double _aspectRatio;       // width:height 4:3, 14:9, 16:9 .. etc
-    double _fov;               // angle of view aka field of view (in degrees)
+    Vector position_;
+    double yaw_, pitch_, roll_;  // angles of rotation (in degrees)
+    double aspectRatio_;       // width:height 4:3, 14:9, 16:9 .. etc
+    double fov_;               // angle of view aka field of view (in degrees)
 
 private:
-    Vector _topLeft, _topRight, _bottomLeft;  // the view matrix(the milimeter paper) coords, inconvenient to be manually set
-    Matrix _rotation;
+    Vector topLeft_, topRight_, bottomLeft_;  // the view matrix(the milimeter paper) coords, inconvenient to be manually set
+    Matrix rotation_;
 };
 
 // y is up/down, z is forward/backward and x is left/right as in Maya studio

@@ -13,27 +13,27 @@ SdlObject::SdlObject(int frameWidth, int frameHeight)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        _error = SDL_GetError();
-        printf("Cannot initialize SDL: %s\n", _error);
+        error_ = SDL_GetError();
+        printf("Cannot initialize SDL: %s\n", error_);
         return;
     }
 
-    _window = SDL_CreateWindow("Raytracer", SDL_WINDOWPOS_UNDEFINED,
+    window_ = SDL_CreateWindow("Raytracer", SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
 
-    if (!_window)
+    if (!window_)
     {
-        _error = SDL_GetError();
-        printf("Cannot set video mode %dx%d - %s\n", frameWidth, frameHeight, _error);
+        error_ = SDL_GetError();
+        printf("Cannot set video mode %dx%d - %s\n", frameWidth, frameHeight, error_);
         return;
     }
 
-    _screen = SDL_GetWindowSurface(_window);
+    screen_ = SDL_GetWindowSurface(window_);
 
-    if (!_screen)
+    if (!screen_)
     {
-        _error = SDL_GetError();
-        printf("Cannot get screen! Error: %s\n", _error);
+        error_ = SDL_GetError();
+        printf("Cannot get screen! Error: %s\n", error_);
         return;
     }
 }
@@ -53,16 +53,16 @@ void SdlObject::closeGraphics()
 /// displays a VFB (virtual frame buffer) to the real framebuffer, with the necessary color clipping
 void SdlObject::displayVFB(Color vfb[VFB_MAX_SIZE][VFB_MAX_SIZE])
 {
-    int rs = _screen->format->Rshift;
-    int gs = _screen->format->Gshift;
-    int bs = _screen->format->Bshift;
-    for (int y = 0; y < _screen->h; y++) {
-        Uint32 *row = (Uint32*) ((Uint8*) _screen->pixels + y * _screen->pitch);
-        for (int x = 0; x < _screen->w; x++)
+    int rs = screen_->format->Rshift;
+    int gs = screen_->format->Gshift;
+    int bs = screen_->format->Bshift;
+    for (int y = 0; y < screen_->h; y++) {
+        Uint32 *row = (Uint32*) ((Uint8*) screen_->pixels + y * screen_->pitch);
+        for (int x = 0; x < screen_->w; x++)
             row[x] = vfb[y][x].toRGB32(rs, gs, bs);
     }
-    SDL_FreeSurface(_screen);
-    SDL_UpdateWindowSurface(_window);
+    SDL_FreeSurface(screen_);
+    SDL_UpdateWindowSurface(window_);
 }
 
 /// waits the user to indicate he wants to close the application (by either clicking on the "X" of the window,
@@ -94,14 +94,14 @@ void SdlObject::waitForUserExit(void)
 /// returns the frame width
 int SdlObject::frameWidth(void)
 {
-    if (_screen) return _screen->w;
+    if (screen_) return screen_->w;
     return 0;
 }
 
 /// returns the frame height
 int SdlObject::frameHeight(void)
 {
-    if (_screen) return _screen->h;
+    if (screen_) return screen_->h;
     return 0;
 }
 

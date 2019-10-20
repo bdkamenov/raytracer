@@ -6,24 +6,61 @@
 
 extern Vector lightPosition;
 extern double lightIntensity;
+extern Color ambientLight;
 
-Color CheckerShader::shade(const Ray& ray, IntersectionInfo& info)
-{
-    int x = (int) floor(info._u / _size);
-    int y = (int) floor(info._v / _size);
+bool visibilityCheck(const Vector& start, const Vector& end);
 
-    Color checkerColor = ((x + y) % 2 == 0) ? _color1 : _color2;
+double getLightContribution(const IntersectionInfo& info)  // calculates the amount of light
+{                                                          // that gets to the point
 
-    Vector v1 = info._normal;
-    Vector v2 = lightPosition - info._ip;
-    double distToLightSqr = v2.lengthSqr();         // the distance to the light ^2
-    v2.normalize();
+    double distanceToLightSqr = (info.ip_ - lightPosition).lengthSqr();  // the distance to the light ^2
 
-
-    double lambertCoeff = dot(v1, v2);              // take the angle between the light and the normal and the light
-    double attenuationCoeff = 1.0 / distToLightSqr; // by taking away from light the intensity reduces with 1/dist^2
+    if(!visibilityCheck(info.ip_ + info.normal_ * 1e-6, lightPosition))
+        return 0;
+    else
+        return lightIntensity/distanceToLightSqr; // by taking away from light the intensity reduces with 1/dist^2
 
 
-    return checkerColor * lambertCoeff * attenuationCoeff * lightIntensity;
 }
 
+Color Lambert::shade(const Ray& ray, IntersectionInfo& info)
+{
+    Color diffuse = texture_ ? texture_->sample(info) : color_;
+
+    Vector v1 = info.normal_;
+    Vector v2 = lightPosition - info.ip_;
+    v2.normalize();
+
+    double lambertCoeff = dot(v1, v2);              // take the angle between the light and the normal and the light
+
+    return ambientLight * diffuse + // used for better looking shadow
+           diffuse * lambertCoeff * getLightContribution(info);
+}
+
+Color Phong::shade(const Ray &ray, IntersectionInfo &info)
+{
+    Color diffuse = texture_ ? texture_->sample(info) : color_;
+
+    Vector v1 = info.normal_;
+    Vector v2 = lightPosition - info.ip_;
+    v2.normalize();
+    double fromLight = getLightContribution(info);
+
+    double lambertCoeff = dot(v1, v2);              // take the angle between the light and the normal and the light
+
+    Vector r = reflect(info.ip_ - lightPosition, info.normal_);
+    Vector toCamera = -ray.dir_;
+    double cosGamma = dot(toCamera, r);
+    double phongCoeff = cosGamma > 0 ? pow(cosGamma, specularExponent_) :  0;
+
+    return ambientLight * diffuse +
+           diffuse * (lambertCoeff * fromLight + phongCoeff * specularMultiplier_ * fromLight);
+}
+
+Color CheckerTexture::sample(const IntersectionInfo &info)
+{
+    int x = (int) floor(info.u_ * scaling_ / 7);
+    int y = (int) floor(info.v_ * scaling_ / 7);
+
+    return  ((x + y) % 2 == 0) ? color1_ : color2_;
+}

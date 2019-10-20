@@ -3,7 +3,12 @@ project(raytracer)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+
 include_directories(src)
+
+find_library(SDL2 REQUIRED SDL2)
 
 file(GLOB SOURCES
         src/*.cpp
@@ -13,11 +18,9 @@ file(GLOB SOURCES
         src/render/*.cpp
         src/scenes/*.cpp
         src/utils/*.cpp
+        src/shaders/*.cpp
         )
 
 add_executable(raytracer ${SOURCES})
 
-INCLUDE(FindPkgConfig)
-
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
+target_link_libraries(raytracer PRIVATE SDL2)

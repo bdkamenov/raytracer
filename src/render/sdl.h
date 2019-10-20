@@ -28,9 +28,9 @@ public:
 private:
     SdlObject(int frameWidth, int frameHeight);
 
-    SDL_Window* _window = nullptr;
-    SDL_Surface* _screen = nullptr;
-    const char* _error = nullptr;
+    SDL_Window* window_ = nullptr;
+    SDL_Surface* screen_ = nullptr;
+    const char* error_ = nullptr;
 };
 
 

@@ -8,8 +8,8 @@
 #include "vector.h"
 
 struct Ray {
-    Vector _start;
-    Vector _dir; //!< normed!
+    Vector start_;
+    Vector dir_; //!< normed!
 };
 
 

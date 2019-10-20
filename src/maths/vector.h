@@ -10,36 +10,36 @@
 class Vector {
 public:
 	Vector() = default;
-	Vector(double x, double y, double z):_x(x), _y(y), _z(z) { }
+	Vector(double x, double y, double z):x_(x), y_(y), z_(z) { }
 
 
 	void set(double x, double y, double z)
 	{
-		_x = x;
-		_y = y;
-		_z = z;
+		x_ = x;
+		y_ = y;
+		z_ = z;
 	}
 
 	void makeZero(void)
 	{
-		_x = _y = _z = 0.0;
+		x_ = y_ = z_ = 0.0;
 	}
 
-	inline constexpr double length(void) const
+	inline double length(void) const
 	{
-		return sqrt(_x * _x + _y * _y + _z * _z);
+		return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
 	}
 
 	inline constexpr double lengthSqr(void) const
 	{
-		return (_x * _x + _y * _y + _z * _z);
+		return (x_ * x_ + y_ * y_ + z_ * z_);
 	}
 
 	void scale(double multiplier)
 	{
-		_x *= multiplier;
-		_y *= multiplier;
-		_z *= multiplier;
+		x_ *= multiplier;
+		y_ *= multiplier;
+		z_ *= multiplier;
 	}
 
 	void operator *= (double multiplier)
@@ -49,9 +49,9 @@ public:
 
 	void operator += (const Vector& other)
 	{
-		_x += other._x;
-		_y += other._y;
-		_z += other._z;
+		x_ += other.x_;
+		y_ += other.y_;
+		z_ += other.z_;
 	}
 
 	void operator /= (double divider)
@@ -71,61 +71,69 @@ public:
 		scale(newLength / length());
 	}
 
-	double _x, _y, _z;
+	double x_, y_, z_;
 
 };
 
 inline Vector operator + (const Vector& a, const Vector& b)
 {
-	return Vector(a._x + b._x, a._y + b._y, a._z + b._z);
+	return Vector(a.x_ + b.x_, a.y_ + b.y_, a.z_ + b.z_);
 }
 
 inline Vector operator - (const Vector& a, const Vector& b)
 {
-	return Vector(a._x - b._x, a._y - b._y, a._z - b._z);
+	return Vector(a.x_ - b.x_, a.y_ - b.y_, a.z_ - b.z_);
 }
 
 inline Vector operator - (const Vector& a)
 {
-	return Vector(-a._x, -a._y, -a._z);
+	return Vector(-a.x_, -a.y_, -a.z_);
 }
 
 /// dot product
 inline double operator * (const Vector& a, const Vector& b)
 {
-	return a._x * b._x + a._y * b._y + a._z * b._z;
+	return a.x_ * b.x_ + a.y_ * b.y_ + a.z_ * b.z_;
 }
 
 /// dot product (functional form, to make it more explicit):
 inline double dot(const Vector& a, const Vector& b)
 {
-	return a._x * b._x + a._y * b._y + a._z * b._z;
+	return a.x_ * b.x_ + a.y_ * b.y_ + a.z_ * b.z_;
 }
 
 /// cross product
 inline Vector operator ^ (const Vector& a, const Vector& b)
 {
 	return Vector(
-		a._y * b._z - a._z * b._y,
-		a._z * b._x - a._x * b._z,
-		a._x * b._y - a._y * b._x
+		a.y_ * b.z_ - a.z_ * b.y_,
+		a.z_ * b.x_ - a.x_ * b.z_,
+		a.x_ * b.y_ - a.y_ * b.x_
 	);
 }
 
 inline Vector operator * (const Vector& a, double multiplier)
 {
-	return Vector(a._x * multiplier, a._y * multiplier, a._z * multiplier);
+	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
 }
 
 inline Vector operator * (double multiplier, const Vector& a)
 {
-	return Vector(a._x * multiplier, a._y * multiplier, a._z * multiplier);
+	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
 }
 
 inline Vector operator / (const Vector& a, double divider)
 {
 	double multiplier = 1.0 / divider;
-	return Vector(a._x * multiplier, a._y * multiplier, a._z * multiplier);
+	return Vector(a.x_ * multiplier, a.y_ * multiplier, a.z_ * multiplier);
+}
+
+inline Vector reflect(Vector in, const Vector& norm)
+{
+	in.normalize();
+	in += 2 * norm * dot(norm, -in);
+	in.normalize();
+	return in;
 }
 
 #endif // __VECTOR3D_H__

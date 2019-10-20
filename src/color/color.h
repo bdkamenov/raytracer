@@ -16,113 +16,113 @@ inline constexpr unsigned convertTo8bit(float x)
 
 /// Represents a color, using floatingpoint components in [0..1]
 struct Color {
-    float _r, _g, _b;
+    float r_, g_, b_;
 
 
     Color() = default;
-    Color(float r, float g, float b) : _r(r), _g(g), _b(b) { }  //!< Construct a color from floatingpoint values
+    constexpr Color(float r, float g, float b) : r_(r), g_(g), b_(b) { }  //!< Construct a color from floatingpoint values
 
     explicit Color(unsigned rgbcolor) : //!< Construct a color from R8G8B8 value like "0xffce08"
-            _b((rgbcolor & 0xff) / 255.0f),
-            _g(((rgbcolor >> 8) & 0xff) / 255.0f),
-            _r(((rgbcolor >> 16) & 0xff) / 255.0f)
+            b_((rgbcolor & 0xff) / 255.0f),
+            g_(((rgbcolor >> 8) & 0xff) / 255.0f),
+            r_(((rgbcolor >> 16) & 0xff) / 255.0f)
     { }
 
     /// convert to RGB32, with channel shift specifications. The default values are for
     /// the blue channel occupying the least-significant byte
-    unsigned toRGB32(int redShift = 16, int greenShift = 8, int blueShift = 0)
+    constexpr unsigned toRGB32(int redShift = 16, int greenShift = 8, int blueShift = 0)
     {
-        unsigned ir = convertTo8bit(_r);
-        unsigned ig = convertTo8bit(_g);
-        unsigned ib = convertTo8bit(_b);
+        unsigned ir = convertTo8bit(r_);
+        unsigned ig = convertTo8bit(g_);
+        unsigned ib = convertTo8bit(b_);
         return (ib << blueShift) | (ig << greenShift) | (ir << redShift);
     }
 
     /// make black
     void makeZero(void)
     {
-        _r = _g = _b = 0;
+        r_ = g_ = b_ = 0;
     }
 
     /// set the color explicitly
     void setColor(float r, float g, float b)
     {
-        _r = r;
-        _g = g;
-        _b = b;
+        r_ = r;
+        g_ = g;
+        b_ = b;
     }
 
     /// get the intensity of the color (direct)
     constexpr float intensity()
     {
-        return (_r + _g + _b) / 3;
+        return (r_ + g_ + b_) / 3;
     }
 
     /// get the perceptual intensity of the color
     constexpr float intensityPerceptual()
     {
-        return (_r * 0.299 + _g * 0.587 + _b * 0.114);
+        return (r_ * 0.299 + g_ * 0.587 + b_ * 0.114);
     }
 
     /// Accumulates some color to the current
     void operator += (const Color& rhs)
     {
-        _r += rhs._r;
-        _g += rhs._g;
-        _b += rhs._b;
+        r_ += rhs.r_;
+        g_ += rhs.g_;
+        b_ += rhs.b_;
     }
 
     /// multiplies the color
     void operator *= (float multiplier)
     {
-        _r *= multiplier;
-        _g *= multiplier;
-        _b *= multiplier;
+        r_ *= multiplier;
+        g_ *= multiplier;
+        b_ *= multiplier;
     }
 
     /// divides the color
     void operator /= (float divider)
     {
-        _r /= divider;
-        _g /= divider;
-        _b /= divider;
+        r_ /= divider;
+        g_ /= divider;
+        b_ /= divider;
     }
 };
 
 /// adds two colors
-inline Color operator + (const Color& a, const Color& _b)
+inline constexpr Color operator+ (const Color& a, const Color& _b)
 {
-    return Color(a._r + _b._r, a._g + _b._g, a._b + _b._b);
+    return Color(a.r_ + _b.r_, a.g_ + _b.g_, a.b_ + _b.b_);
 }
 
 /// subtracts two colors
-inline Color operator - (const Color& a, const Color& _b)
+inline constexpr Color operator- (const Color& a, const Color& _b)
 {
-    return Color(a._r - _b._r, a._g - _b._g, a._b - _b._b);
+    return Color(a.r_ - _b.r_, a.g_ - _b.g_, a.b_ - _b.b_);
 }
 
 /// multiplies two colors
-inline Color operator * (const Color& a, const Color& _b)
+inline constexpr Color operator* (const Color& a, const Color& _b)
 {
-    return Color(a._r * _b._r, a._g * _b._g, a._b * _b._b);
+    return Color(a.r_ * _b.r_, a.g_ * _b.g_, a.b_ * _b.b_);
 }
 
 /// multiplies a color by some multiplier
-inline Color operator * (const Color& a, float multiplier)
+inline constexpr Color operator* (const Color& a, float multiplier)
 {
-    return Color(a._r * multiplier, a._g * multiplier, a._b * multiplier);
+    return Color(a.r_ * multiplier, a.g_ * multiplier, a.b_ * multiplier);
 }
 
 /// multiplies a color by some multiplier
-inline Color operator * (float multiplier, const Color& a)
+inline constexpr Color operator* (float multiplier, const Color& a)
 {
-    return Color(a._r * multiplier, a._g * multiplier, a._b * multiplier);
+    return Color(a.r_ * multiplier, a.g_ * multiplier, a.b_ * multiplier);
 }
 
 /// divides some color
-inline Color operator / (const Color& a, float divider)
+inline constexpr Color operator/ (const Color& a, float divider)
 {
-    return Color(a._r / divider, a._g / divider, a._b / divider);
+    return Color(a.r_ / divider, a.g_ / divider, a.b_ / divider);
 }
 
 #endif // __COLOR_H__

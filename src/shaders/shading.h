@@ -9,31 +9,76 @@
 #include "geometries/geometry.h"
 #include "color/color.h"
 
+class Texture
+{
+public:
+    virtual ~Texture() = default;
+    virtual Color sample(const IntersectionInfo& info) = 0;
+};
+
+class CheckerTexture: public Texture
+{
+public:
+    CheckerTexture(const Color& c1, const Color& c2, size_t size = 1): color1_(c1), color2_(c2), scaling_(size) {}
+    ~CheckerTexture() override = default;
+    Color sample(const IntersectionInfo& info) override;
+
+
+private:
+    Color color1_;
+    Color color2_;
+    size_t scaling_;
+};
 
 class Shader
 {
 public:
+
     virtual ~Shader() = default;
     virtual Color shade(const Ray& ray, IntersectionInfo& info) = 0;
 };
 
-class CheckerShader : public Shader
+class Lambert : public Shader
 {
 public:
-    CheckerShader(const Color& c1, const Color& c2, size_t size = 5): _color1(c1), _color2(c2), _size(size) {}
-    ~CheckerShader() = default;
+    Lambert(const Color& color = {0.f, 0.f, 0.f}, std::unique_ptr<Texture> texture = nullptr)
+    : color_(color)
+    , texture_(std::move(texture))
+    {}
+
+    ~Lambert() override = default;
     Color shade(const Ray& ray, IntersectionInfo& info) override;
 
 private:
-    Color _color1;
-    Color _color2;
-    size_t _size;
+    Color color_; // used if the texture is null
+    std::unique_ptr<Texture> texture_;
+};
+
+class Phong : public Shader
+{
+public:
+    Phong(double a, double b, const Color& color = {0.f, 0.f, 0.f}, std::unique_ptr<Texture> texture = nullptr)
+    : specularMultiplier_(a)
+    , specularExponent_(b)
+    , color_(color)
+    , texture_(std::move(texture)) {}
+
+    ~Phong() override = default;
+    Color shade(const Ray& ray, IntersectionInfo& info) override;
+
+    double specularMultiplier_; // defines how bright the flashes will be
+    double specularExponent_;   // defines how fine the flashes will be
+
+private:
+    Color color_; // used if the texture is null
+    std::unique_ptr<Texture> texture_;
 };
 
 struct Node
 {
-    std::shared_ptr<Geometry> _geometry = nullptr;
-    std::shared_ptr<Shader> _shader = nullptr;
+    //Node(std::unique_ptr<Geometry> geometry, std::unique_ptr<Shader> shader): geometry_(geometry.get()), shader_(shader.get()) {}
+    std::unique_ptr<Geometry> geometry_;
+    std::unique_ptr<Shader> shader_;
 };
 
 
