@@ -5,7 +5,7 @@
 #ifndef __BITMAP_H__
 #define __BITMAP_H__
 
-#include "color.h"
+#include "color/color.h"
 
 /// @brief a class that represents a bitmap (2d array of colors), e.g. a image
 /// supports loading/saving to BMP

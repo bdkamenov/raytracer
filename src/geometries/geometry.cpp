@@ -72,7 +72,7 @@ bool Sphere::intersect(const Ray &ray, IntersectionInfo &info)
     info.v_ = asin(posRelative.y_ / radius_); // it can be between -1 1
     // we want to remap them from [(-PI...PI)x_(-PI/2...PI/2)] -> [(0..1)x_(0..1)] for easier texturing later
     info.u_ = (info.u_ + PI) / (2*PI);
-    info.v_ = (info.v_ + PI/2) / (PI);
+    info.v_ = -(info.v_ + PI/2) / (PI);
     info.geom_ = this;
 
     return true;

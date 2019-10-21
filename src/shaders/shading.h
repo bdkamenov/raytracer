@@ -8,6 +8,7 @@
 #include "maths/ray.h"
 #include "geometries/geometry.h"
 #include "color/color.h"
+#include "materials/bitmap.h"
 
 class Texture
 {
@@ -28,6 +29,18 @@ private:
     Color color1_;
     Color color2_;
     size_t scaling_;
+};
+
+class BitmapTexture: public Texture
+{
+public:
+    BitmapTexture(const std::string& filename, double scaling = 1.0);
+    ~BitmapTexture() = default;
+    Color sample(const IntersectionInfo& info) override;
+
+private:
+    std::unique_ptr<Bitmap> bitmap_;
+    double scaling_;
 };
 
 class Shader

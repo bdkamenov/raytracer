@@ -31,33 +31,39 @@ void setupScene() {
 
     // objects setup
     std::unique_ptr csgObj (std::make_unique<CsgMinus>());
-    csgObj->left_ = std::make_unique<Cube>(Vector(30, 60.0, -50.0), 15.0);
-    csgObj->right_ = std::make_unique<Sphere>(Vector(30, 60.0, -50.0), 20.0);
+    csgObj->left_ = std::make_unique<Cube>(Vector(45.0, 75.0, -10.0), 35.0);
+    csgObj->right_ = std::make_unique<Sphere>(Vector(45.0, 75.0, -10.0), 45.0);
+
+    std::unique_ptr sphere (std::make_unique<Sphere>(Vector(45.0, 75.0, -30.0), 20.0));
 
     std::unique_ptr plane1 (std::make_unique<Plane>(4.0));
 
-    std::unique_ptr cube (std::make_unique<Cube>(Vector(-15.0, 60.0, 0), 20.0));
+    std::unique_ptr cube (std::make_unique<Cube>(Vector(-20.0, 60.0, -20.0), 20.0));
 
     // shaders setup
     std::unique_ptr phong (std::make_unique<Phong>(10.0, 30.0, Color(0, 0, 0),
                            std::make_unique<CheckerTexture>(Color(0.4f, 0.2f, 0.1f),
-                                                            Color(0.9f, 0.8f, 0.1f), 7)));
+                                                            Color(0.9f, 0.8f, 0.1f), 2)));
+
 
     std::unique_ptr lambert1 (std::make_unique<Lambert>(Color(0, 0, 0),
-                              std::make_unique<CheckerTexture>(Color(0.1f, 0.8f, 0.6f),
-                                                               Color(0.3f, 0.7f, 0.1f))));
+                              std::make_unique<BitmapTexture>("../assets/floor.bmp", 100)));
 
     std::unique_ptr lambert2 (std::make_unique<Lambert>(Color(0, 0, 0),
                               std::make_unique<CheckerTexture>(Color(0.f, 1.f, 1.f),
                                                                Color(1.f, 0.f, 1.f), 1)));
 
+    std::unique_ptr lambert3 (std::make_unique<Lambert>(Color(0, 0, 0),
+                              std::make_unique<BitmapTexture>("../assets/world.bmp")));
+
 
     nodes.push_back({std::move(csgObj), std::move(phong)});
     nodes.push_back({std::move(plane1), std::move(lambert1)});
     nodes.push_back({std::move(cube), std::move(lambert2)});
+    nodes.push_back({std::move(sphere), std::move(lambert3)});
 
-    lightPosition = Vector(40, 100, -130);
-    lightIntensity = 25000.0;
+    lightPosition = Vector(40, 150, -130);
+    lightIntensity = 35000.0;
 
     camera.frameBegin();
 }

@@ -64,3 +64,24 @@ Color CheckerTexture::sample(const IntersectionInfo &info)
 
     return  ((x + y) % 2 == 0) ? color1_ : color2_;
 }
+
+BitmapTexture::BitmapTexture(const std::string& filename, double scale)
+: bitmap_(std::make_unique<Bitmap>())
+, scaling_(1/scale)
+{
+    bitmap_->loadImage(filename.c_str());
+}
+
+Color BitmapTexture::sample(const IntersectionInfo &info)
+{
+    int x = (int) floor(info.u_ * scaling_ * bitmap_->getWidth());
+    int y = (int) floor(info.v_ * scaling_ * bitmap_->getHeight());
+    // 0 <= x < bitmap.width
+    // 0 <= y < bitmap.height
+    x = (x % bitmap_->getWidth());
+    y = (y % bitmap_->getHeight());
+    if (x < 0) x += bitmap_->getWidth();
+    if (y < 0) y += bitmap_->getHeight();
+
+    return bitmap_->getPixel(x, y);
+}
