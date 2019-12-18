@@ -25,21 +25,21 @@ struct IntersectionInfo
 class Geometry
 {
 public:
-    virtual ~Geometry() = default;
+    __device__ virtual ~Geometry() = default;
 
-    virtual bool intersect(const Ray& ray, IntersectionInfo& info) = 0;
+    __device__ virtual bool intersect(const Ray& ray, IntersectionInfo& info) = 0;
 
 };
 
 class Plane : public Geometry
 {
 public:
-    Plane() = default;
-    Plane(double y): y_(y) {}
-    ~Plane() = default;
+    __device__ Plane() = default;
+    __device__ Plane(double y): y_(y) {}
+    __device__ ~Plane() = default;
 
 
-    bool intersect(const Ray& ray, IntersectionInfo& info) override;
+    __device__ bool intersect(const Ray& ray, IntersectionInfo& info) override;
 
 public:
     double y_; // the plane will always be || XZ plane
@@ -48,13 +48,13 @@ public:
 class Sphere : public Geometry
 {
 public:
-    Sphere() = default;
-    Sphere(const Vector& center, float radius)
+    __device__ Sphere() = default;
+    __device__ Sphere(const Vector& center, float radius)
     : center_(center)
     , radius_(radius) {}
-    ~Sphere() = default;
+    __device__ ~Sphere() = default;
 
-    bool intersect(const Ray& ray, IntersectionInfo& info) override;
+    __device__ bool intersect(const Ray& ray, IntersectionInfo& info) override;
 private:
     Vector center_;
     float radius_;
@@ -63,14 +63,14 @@ private:
 class Cube : public Geometry
 {
 public:
-    Cube() = default;
-    Cube(const Vector& center, float halfSide)
+    __device__ Cube() = default;
+    __device__ Cube(const Vector& center, float halfSide)
     : center_(center)
     , halfSide_(halfSide) {}
-    ~Cube() = default;
+    __device__ ~Cube() = default;
 
-    bool intersect(const Ray& ray, IntersectionInfo& info) override;
-    bool intersectSide(double level, double start, double dir, const Ray& ray, const Vector& normal, IntersectionInfo& info);
+    __device__ bool intersect(const Ray& ray, IntersectionInfo& info) override;
+    __device__ bool intersectSide(double level, double start, double dir, const Ray& ray, const Vector& normal, IntersectionInfo& info);
 
 private:
     Vector center_;
@@ -81,8 +81,8 @@ class CsgOp: public Geometry
 {
     void findAllIntersections(Ray ray, Geometry* geom, std::vector<IntersectionInfo>& ips);
 public:
-    CsgOp() = default;
-    CsgOp(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right);
+    __device__ CsgOp() = default;
+    __device__ CsgOp(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right);
     std::unique_ptr<Geometry> left_, right_;
     virtual bool boolOp(bool inA, bool inB) = 0;
 
@@ -91,23 +91,23 @@ public:
 
 class CsgAnd: public CsgOp {
 public:
-    CsgAnd() = default;
-    CsgAnd(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
-    bool boolOp(bool inA, bool inB) { return inA && inB; }
+    __device__ CsgAnd() = default;
+    __device__ CsgAnd(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
+    __device__ bool boolOp(bool inA, bool inB) { return inA && inB; }
 };
 
 class CsgPlus: public CsgOp {
 public:
-    CsgPlus() = default;
-    CsgPlus(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
-    bool boolOp(bool inA, bool inB) { return inA || inB; }
+    __device__ CsgPlus() = default;
+    __device__ CsgPlus(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
+    __device__ bool boolOp(bool inA, bool inB) { return inA || inB; }
 };
 
 class CsgMinus: public CsgOp {
 public:
-    CsgMinus() = default;
-    CsgMinus(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
-    bool boolOp(bool inA, bool inB) { return inA && !inB; }
+    __device__ CsgMinus() = default;
+    __device__ CsgMinus(std::unique_ptr<Geometry>& left, std::unique_ptr<Geometry>& right) : CsgOp(left, right) {}
+    __device__ bool boolOp(bool inA, bool inB) { return inA && !inB; }
 };
 
 
